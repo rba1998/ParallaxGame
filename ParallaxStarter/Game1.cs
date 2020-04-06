@@ -44,9 +44,13 @@ namespace ParallaxStarter
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
-            var spritesheet = Content.Load<Texture2D>("helicopter");
-            player = new Player(spritesheet);
-            var backgroundTexture = Content.Load<Texture2D>("background");
+            var spritesheet = Content.Load<Texture2D>("witch1");
+            var sprite2 = Content.Load<Texture2D>("witch2");
+            var spriteShoot = Content.Load<Texture2D>("witch1Shoot");
+            var sprite2Shoot = Content.Load<Texture2D>("witch2Shoot");
+            var spriteBullet = Content.Load<Texture2D>("bullet");
+            player = new Player(spritesheet, sprite2, spriteShoot, sprite2Shoot, spriteBullet);
+            var backgroundTexture = Content.Load<Texture2D>("bg");
             var backgroundSprite = new StaticSprite(backgroundTexture);
             var backgroundLayer = new ParallaxLayer(this);
             backgroundLayer.Sprites.Add(backgroundSprite);
@@ -61,13 +65,22 @@ namespace ParallaxStarter
             // midground
             var midgroundTextures = new Texture2D[]
             {
-                Content.Load<Texture2D>("midground1"),
-                Content.Load<Texture2D>("midground2")
+                Content.Load<Texture2D>("bg_water")
             };
             var midgroundSprites = new StaticSprite[]
             {
                 new StaticSprite(midgroundTextures[0]),
-                new StaticSprite(midgroundTextures[1], new Vector2(3500, 0))
+                new StaticSprite(midgroundTextures[0]),
+                new StaticSprite(midgroundTextures[0]),
+                new StaticSprite(midgroundTextures[0]),
+                new StaticSprite(midgroundTextures[0]),
+                new StaticSprite(midgroundTextures[0]),
+                new StaticSprite(midgroundTextures[0]),
+                new StaticSprite(midgroundTextures[0]),
+                new StaticSprite(midgroundTextures[0]),
+                new StaticSprite(midgroundTextures[0]),
+                new StaticSprite(midgroundTextures[0]),
+                new StaticSprite(midgroundTextures[0]),
             };
             var midgroundLayer = new ParallaxLayer(this);
             midgroundLayer.Sprites.AddRange(midgroundSprites);
@@ -77,12 +90,10 @@ namespace ParallaxStarter
             Components.Add(midgroundLayer);
 
             // foreground
+            Texture2D fg = Content.Load<Texture2D>("fgclouds");
             var foregroundTextures = new List<Texture2D>()
             {
-                Content.Load<Texture2D>("foreground1"),
-                Content.Load<Texture2D>("foreground2"),
-                Content.Load<Texture2D>("foreground3"),
-                Content.Load<Texture2D>("foreground4")
+                fg, fg, fg, fg, fg, fg, fg, fg
             };
             var foregroundSprites = new List<StaticSprite>();
             for (int i = 0; i < foregroundTextures.Count; i++)
@@ -98,7 +109,7 @@ namespace ParallaxStarter
             }
             foregroundLayer.DrawOrder = 4;
             var foregroundScrollController = foregroundLayer.ScrollController as AutoScrollController;
-            foregroundScrollController.Speed = 80f;
+            foregroundScrollController.Speed = 150f;
             Components.Add(foregroundLayer);
 
             // player

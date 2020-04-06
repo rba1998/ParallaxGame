@@ -15,7 +15,13 @@ namespace ParallaxStarter
         /// <summary>
         /// A spritesheet containing a helicopter image
         /// </summary>
-        Texture2D spritesheet;
+        Texture2D sprite1;
+        Texture2D sprite2;
+        Texture2D sprite1Shoot;
+        Texture2D sprite2Shoot;
+        Texture2D spriteCurrent;
+        Texture2D spriteBullet;
+        int spriteChooser;
 
         /// <summary>
         /// The portion of the spritesheet that is the helicopter
@@ -24,14 +30,14 @@ namespace ParallaxStarter
         {
             X = 0,
             Y = 0,
-            Width = 131,
-            Height = 54
+            Width = 64,
+            Height = 64
         };
 
         /// <summary>
         /// The origin of the helicopter sprite
         /// </summary>
-        Vector2 origin = new Vector2(66, 1);
+        Vector2 origin = new Vector2(32, 32);
 
         /// <summary>
         /// The angle the helicopter should tilt
@@ -46,15 +52,31 @@ namespace ParallaxStarter
         /// <summary>
         /// How fast the player moves
         /// </summary>
-        public float Speed { get; set; } = 100;
+        public float Speed { get; set; } = 200;
+
+        /// <summary>
+        /// Bullets fired by this player
+        /// </summary>
+        private List<Bullet> bullets = new List<Bullet>();
+
+        // Delay Timer Initializations
+        private int _animationDelay = 5;
+        private int _animationTimer = 0;
+        private int _shootDelay = 7;
+        private int _shootTimer = 0;
 
         /// <summary>
         /// Constructs a player
         /// </summary>
         /// <param name="spritesheet">The player's spritesheet</param>
-        public Player(Texture2D spritesheet)
+        public Player(Texture2D spritesheet, Texture2D sprite2, Texture2D spriteShoot, Texture2D spriteShoot2, Texture2D spriteBullet )
         {
-            this.spritesheet = spritesheet;
+            this.sprite1 = spritesheet;
+            this.sprite2 = sprite2;
+            this.sprite1Shoot = spriteShoot;
+            this.sprite2Shoot = spriteShoot2;
+            this.spriteBullet = spriteBullet;
+            spriteChooser = 0;
             this.Position = new Vector2(200, 200);
         }
 
@@ -65,6 +87,32 @@ namespace ParallaxStarter
         public void Update(GameTime gameTime)
         {
             Vector2 direction = Vector2.Zero;
+
+            _animationTimer++;
+            if ( _animationTimer > _animationDelay )
+            {
+                _animationTimer = 0;
+                if( spriteChooser == 0 )
+                {
+                    spriteCurrent = sprite1;
+                    spriteChooser = 1;
+                }
+                else if( spriteChooser == 1 )
+                {
+                    spriteCurrent = sprite2;
+                    spriteChooser = 0;
+                }
+                else if( spriteChooser == 2 )
+                {
+                    spriteCurrent = sprite1Shoot;
+                    spriteChooser = 3;
+                }
+                else if( spriteChooser == 3 )
+                {
+                    spriteCurrent = sprite2Shoot;
+                    spriteChooser = 2;
+                }
+            }
             
             // Use GamePad for input
             var gamePad = GamePad.GetState(0);
@@ -93,12 +141,43 @@ namespace ParallaxStarter
             {
                 direction.Y += 1;
             }
+            if(keyboard.IsKeyDown(Keys.Z))
+            {
+                if( spriteChooser < 2 )
+                {
+                    spriteChooser = 2;
+                }
+                if( _shootTimer > _shootDelay )
+                {
+                    _shootTimer = 0;
+                    bullets.Add( new Bullet( spriteBullet, this ) );
+                }
+                _shootTimer++;
+            }
+            else if ( spriteChooser >= 2 )
+            {
+                spriteChooser = 0;
+            }
 
-            // Caclulate the tilt of the helicopter
-            angle = 0.5f * direction.X;
+            // Caclulate the tilt of the player
+            angle = 0.1f * direction.X;
 
-            // Move the helicopter
+            // Move the player
             Position += (float)gameTime.ElapsedGameTime.TotalSeconds * Speed * direction;
+
+            // Update bullets
+            foreach( Bullet b in bullets )
+            {
+                b.Update( gameTime );
+            }
+
+            for( int i = 0; i < bullets.Count; i++ )
+            {
+                if( bullets[ i ].Position.X > 1000 )
+                {
+                    bullets.RemoveAt( i );
+                }
+            }
         }
 
         /// <summary>
@@ -107,9 +186,13 @@ namespace ParallaxStarter
         /// <param name="spriteBatch"></param>
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            // Render the helicopter, rotating about the rotors
-            spriteBatch.Draw(spritesheet, Position, sourceRect, Color.White, angle, origin, 1f, SpriteEffects.None, 0.7f);
-        }
+            // Render the player, rotating about the rotors
+            spriteBatch.Draw(spriteCurrent, Position, sourceRect, Color.White, angle, origin, 1f, SpriteEffects.None, 0.7f);
 
+            foreach( Bullet b in bullets )
+            {
+                b.Draw( spriteBatch, gameTime );
+            }
+        }
     }
 }

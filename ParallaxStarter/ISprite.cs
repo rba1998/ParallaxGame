@@ -20,6 +20,5 @@ namespace ParallaxStarter
         /// <param name="spriteBatch">The SpriteBatch to draw with</param>
         /// <param name="gameTime">The GameTime object</param>
         void Draw(SpriteBatch spriteBatch, GameTime gameTime);
-
     }
 }
