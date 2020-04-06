@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace ParallaxStarter
 {
-    public class Player
+    public class Player : ISprite
     {
         /// <summary>
         /// A spritesheet containing a helicopter image
@@ -105,7 +105,7 @@ namespace ParallaxStarter
         /// Draws the player sprite
         /// </summary>
         /// <param name="spriteBatch"></param>
-        public void Draw(SpriteBatch spriteBatch)
+        public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             // Render the helicopter, rotating about the rotors
             spriteBatch.Draw(spritesheet, Position, sourceRect, Color.White, angle, origin, 1f, SpriteEffects.None, 0.7f);

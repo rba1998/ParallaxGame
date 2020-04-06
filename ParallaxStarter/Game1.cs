@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
 
 namespace ParallaxStarter
 {
@@ -45,6 +46,64 @@ namespace ParallaxStarter
             // TODO: use this.Content to load your game content here
             var spritesheet = Content.Load<Texture2D>("helicopter");
             player = new Player(spritesheet);
+            var backgroundTexture = Content.Load<Texture2D>("background");
+            var backgroundSprite = new StaticSprite(backgroundTexture);
+            var backgroundLayer = new ParallaxLayer(this);
+            backgroundLayer.Sprites.Add(backgroundSprite);
+            backgroundLayer.DrawOrder = 0;
+            Components.Add(backgroundLayer);
+
+            var playerLayer = new ParallaxLayer(this);
+            playerLayer.Sprites.Add(player);
+            playerLayer.DrawOrder = 2;
+            Components.Add(playerLayer);
+
+            // midground
+            var midgroundTextures = new Texture2D[]
+            {
+                Content.Load<Texture2D>("midground1"),
+                Content.Load<Texture2D>("midground2")
+            };
+            var midgroundSprites = new StaticSprite[]
+            {
+                new StaticSprite(midgroundTextures[0]),
+                new StaticSprite(midgroundTextures[1], new Vector2(3500, 0))
+            };
+            var midgroundLayer = new ParallaxLayer(this);
+            midgroundLayer.Sprites.AddRange(midgroundSprites);
+            midgroundLayer.DrawOrder = 1;
+            var midgroundScrollController = midgroundLayer.ScrollController as AutoScrollController;
+            midgroundScrollController.Speed = 40f;
+            Components.Add(midgroundLayer);
+
+            // foreground
+            var foregroundTextures = new List<Texture2D>()
+            {
+                Content.Load<Texture2D>("foreground1"),
+                Content.Load<Texture2D>("foreground2"),
+                Content.Load<Texture2D>("foreground3"),
+                Content.Load<Texture2D>("foreground4")
+            };
+            var foregroundSprites = new List<StaticSprite>();
+            for (int i = 0; i < foregroundTextures.Count; i++)
+            {
+                var position = new Vector2(i * 3500, 0);
+                var sprite = new StaticSprite(foregroundTextures[i], position);
+                foregroundSprites.Add(sprite);
+            }
+            var foregroundLayer = new ParallaxLayer(this);
+            foreach (var sprite in foregroundSprites)
+            {
+                foregroundLayer.Sprites.Add(sprite);
+            }
+            foregroundLayer.DrawOrder = 4;
+            var foregroundScrollController = foregroundLayer.ScrollController as AutoScrollController;
+            foregroundScrollController.Speed = 80f;
+            Components.Add(foregroundLayer);
+
+            // player
+            var playerScrollController = playerLayer.ScrollController as AutoScrollController;
+            playerScrollController.Speed = 0f;
         }
 
         /// <summary>
@@ -79,11 +138,6 @@ namespace ParallaxStarter
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-
-            // TODO: Add your drawing code here
-            spriteBatch.Begin();
-            player.Draw(spriteBatch);
-            spriteBatch.End();
 
             base.Draw(gameTime);
         }
