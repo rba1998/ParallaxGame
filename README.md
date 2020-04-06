@@ -1,4 +1,3 @@
-# parallax-starter
-A starter project for a lesson on the parallax technique
+# Parallax Game (Not final title)
 
-This starter project is for use in conjunction with the lesson presented in the Kansas State University CIS 580 Foundations of Game Programming Textbook. The chapter in this open textbook can be accessed at [http://people.cs.ksu.edu/~nhbean/cis580/parallax-scrolling](http://people.cs.ksu.edu/~nhbean/cis580/parallax-scrolling).
+Control the Witch with the arrow keys, and shoot with the Z key. Featuring 3 parallax layers (background with moon/stars, water, and clouds above). No enemies have been added yet. Inspired by classic "cute-em-up" shooters from the Sega Saturn/Playstation era.
